@@ -24,8 +24,3 @@ function point(){
     this.x = 0;
     this.y = 0;
 }
-
-// for random
-function random(max) {
-	return Math.floor(Math.random() * Math.floor(max));
-}

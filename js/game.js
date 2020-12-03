@@ -13,14 +13,16 @@ class gameVariable {
     ctx = null;
     imgHontai = new Image();
     imgCapsule = new Image();
-    capsuleObj = new capsuleObject()[24];
+    capsuleObj = new Array();
 
     // init
     constructor(ctx) {
         this.ctx = ctx;
         this.imgCapsule.src = "./img/capsule_1.png";
         this.imgHontai.src = "./img/hontai.png";
-        for (var i in this.capsuleObj) {
+
+        for (let i = 0; i < 64; i++) {
+            this.capsuleObj[i] = new capsuleObject();
             this.capsuleObj[i].setImg(this.imgCapsule);
         };
     }
@@ -44,9 +46,15 @@ class gameVariable {
 // draw capsule (in hontai)
 class capsuleObject {
     img = null;
+    x = 0;
+    y = 0;
+    angle = 0;
 
     // init
     constructor() {
+        this.x = random(170) + 80;
+        this.y = random(120) + 100;
+        this.angle = random(360);
     }
 
     // set img
@@ -56,7 +64,7 @@ class capsuleObject {
 
     // draw
     draw(time) {
-        game.grotation(this.img, 120, 120, 50, 50, time / 12);
+        game.grotation(this.img, this.x, this.y, 50, 50, time / 12 + this.angle);
     }
 }
 
@@ -95,7 +103,12 @@ function gameDraw() {
     }
 
     // hontai
-    //game.gcopy(game.imgHontai, 160, 200, 400, 380);
+    game.gcopy(game.imgHontai, 160, 220, 400, 380);
 
     // mozi
+}
+
+// for random
+function random(max) {
+    return Math.floor(Math.random() * Math.floor(max));
 }
