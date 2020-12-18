@@ -1,5 +1,10 @@
 const TO_RADIANS = Math.PI / 180;
 
+// rate
+const PAR_DINNER = 0.9;
+const PAR_LIKE = 0.05;
+const PAR_EATING_OUT = 0.07;
+
 // game setting
 class gameSetting {
     fps = 30;
@@ -18,13 +23,15 @@ class gameVariable {
     // init
     constructor(ctx) {
         this.ctx = ctx;
-        this.imgCapsule.src = "./img/capsule_1.png";
         this.imgHontai.src = "./img/hontai.png";
 
-        for (let i = 0; i < 64; i++) {
-            this.capsuleObj[i] = new capsuleObject();
-            this.capsuleObj[i].setImg(this.imgCapsule);
-        };
+        // add normal
+        for (let i = 0; i < 48; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_1.png"));
+
+        // add rare
+        for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_2.png"));
+        for (let i = 0; i < 4; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_3.png"));
+
     }
 
     // img copy ...center
@@ -51,15 +58,14 @@ class capsuleObject {
     angle = 0;
 
     // init
-    constructor() {
+    constructor(src) {
         this.x = random(170) + 80;
         this.y = random(120) + 100;
         this.angle = random(360);
-    }
 
-    // set img
-    setImg(img) {
-        this.img = img;
+        // set img
+        this.img = new Image();
+        this.img.src = src;
     }
 
     // draw
