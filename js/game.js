@@ -24,6 +24,7 @@ class gameVariable {
     capsuleObj = new Array();
     imgTodayCapsule = new Image();
     imgBackground = new Image();
+    dialog = false;
 
     // init
     constructor(ctx, dinnerList) {
@@ -104,6 +105,12 @@ class capsuleObject {
     draw(time) {
         game.grotation(this.img, this.x, this.y, 50, 50, time / 12 + this.angle);
     }
+
+    // draw for main
+    drawF(time) {
+        let y = -300 + 470 * this.y / 150 - 320;
+        game.grotation(this.img, 160, y, 200, 200, time / 12 + this.angle);
+    }
 }
 
 // start animation
@@ -117,6 +124,10 @@ function startAnimation(b) {
 function animation(time) {
     let y = 250 + 118.0 * easeOutBounce(time / 120);
     game.imgTodayCapsule.setPoint(228, y);
+
+    if (time > 120) {
+        game.dialog = true;
+    }
 };
 
 
@@ -164,7 +175,24 @@ function gameDraw() {
     // hontai
     game.gcopy(game.imgHontai, 160, 220, 400, 380);
 
+    // before capsule
+    game.imgTodayCapsule.drawF(game.time / 5);
+
     // mozi
+    if (game.dialog) {
+        let top = 220;
+        game.ctx.fillStyle = "#4620A7";
+        game.ctx.fillRect(35, top - 5, 250, 170);
+        game.ctx.fillStyle = "#EEEEEE";
+        game.ctx.fillRect(40, top, 240, 160);
+        game.ctx.fillStyle = "#110200";
+        game.ctx.textAlign = "center";
+        game.ctx.textBaseline = "top";
+        game.ctx.font = "32px sans-serif";
+        game.ctx.fillText("今日の夜ごはんは", 160, top + 24, 200);
+        game.ctx.font = "64px sans-serif";
+        game.ctx.fillText(game.todayDinner, 160, top + 70, 200);
+    }
 }
 
 // for random
