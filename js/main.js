@@ -13,7 +13,7 @@ function initialize() {
 	screenCanvas.addEventListener('click', onClick, false);
 
 	// width and height
-	let ph = document.documentElement.clientHeight - 100;
+	let ph = document.documentElement.clientHeight * 0.85;
 	let pw = ph / 2;
 	screenCanvas.width = pw;
 	screenCanvas.height = ph;

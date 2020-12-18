@@ -25,6 +25,7 @@ class gameVariable {
     imgTodayCapsule = new Image();
     imgBackground = new Image();
     dialog = false;
+    dialogOpacity = 0;
 
     // init
     constructor(ctx, dinnerList) {
@@ -103,13 +104,13 @@ class capsuleObject {
 
     // draw
     draw(time) {
-        game.grotation(this.img, CanvasRate*this.x, CanvasRate*this.y, CanvasRate*50, CanvasRate*50, time / 12 + this.angle);
+        game.grotation(this.img, CanvasRate * this.x, CanvasRate * this.y, CanvasRate * 50, CanvasRate * 50, time / 12 + this.angle);
     }
 
     // draw for main
     drawF(time) {
-        let y = -300 + 470 * this.y / 150 - 320;
-        game.grotation(this.img, CanvasRate*160, CanvasRate*y, CanvasRate*200, CanvasRate*200, time / 12 + this.angle);
+        let y = -600 + 770 * this.y / 150 - 770;
+        game.grotation(this.img, CanvasRate * 160, CanvasRate * y, CanvasRate * 200, CanvasRate * 200, time / 12 + this.angle);
     }
 }
 
@@ -122,11 +123,13 @@ function startAnimation(b) {
 
 // animation
 function animation(time) {
-    let y = (250 + 118.0 * easeOutBounce(time / 120));
+    let y = (250 + 118.0 * easeOutBounce(time / 160));
     game.imgTodayCapsule.setPoint(228, y);
 
-    if (time > 180) {
+    if (time > 270) {
         game.dialog = true;
+        game.dialogOpacity+=12;
+        if (game.dialogOpacity > 255) game.dialogOpacity = 255;
     }
 };
 
@@ -163,10 +166,10 @@ function gameDraw() {
     // background
     game.ctx.beginPath();
     game.ctx.fillStyle = "#FFFFFF";
-    game.ctx.fillRect(CanvasRate*0, CanvasRate*0, CanvasRate*320, CanvasRate*640);
+    game.ctx.fillRect(CanvasRate * 0, CanvasRate * 0, CanvasRate * 320, CanvasRate * 640);
 
     // backgroungd img
-    game.gcopy(game.imgBackground, CanvasRate*160, CanvasRate*320, CanvasRate*320, CanvasRate*640);
+    game.gcopy(game.imgBackground, CanvasRate * 160, CanvasRate * 320, CanvasRate * 320, CanvasRate * 640);
 
     // capsule
     for (var i in game.capsuleObj) {
@@ -175,7 +178,7 @@ function gameDraw() {
     game.imgTodayCapsule.draw(game.time / 5);
 
     // hontai
-    game.gcopy(game.imgHontai, CanvasRate*160, CanvasRate*220, CanvasRate*400, CanvasRate*380);
+    game.gcopy(game.imgHontai, CanvasRate * 160, CanvasRate * 220, CanvasRate * 400, CanvasRate * 380);
 
     // before capsule
     game.imgTodayCapsule.drawF(game.time / 5);
@@ -183,17 +186,17 @@ function gameDraw() {
     // mozi
     if (game.dialog) {
         let top = 220;
-        game.ctx.fillStyle = "#4620A7";
-        game.ctx.fillRect(CanvasRate*35, CanvasRate*(top - 5), CanvasRate*250, CanvasRate*170);
-        game.ctx.fillStyle = "#EEEEEE";
-        game.ctx.fillRect(CanvasRate*40, CanvasRate*top, CanvasRate*240, CanvasRate*160);
-        game.ctx.fillStyle = "#110200";
+        game.ctx.fillStyle = `rgba(100, 149, 237, ${game.dialogOpacity/255})`;
+        game.ctx.fillRect(CanvasRate * 35, CanvasRate * (top - 5), CanvasRate * 250, CanvasRate * 170);
+        game.ctx.fillStyle = `rgba(238, 238, 238, ${game.dialogOpacity/255})`;
+        game.ctx.fillRect(CanvasRate * 40, CanvasRate * top, CanvasRate * 240, CanvasRate * 160);
+        game.ctx.fillStyle = `rgba(17, 2, 0, ${game.dialogOpacity/255})`;;
         game.ctx.textAlign = "center";
         game.ctx.textBaseline = "top";
         game.ctx.font = "32px sans-serif";
-        game.ctx.fillText("今日の夜ごはんは", CanvasRate*160, CanvasRate*(top + 24), CanvasRate*200);
+        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top + 24), CanvasRate * 200);
         game.ctx.font = "64px sans-serif";
-        game.ctx.fillText(game.todayDinner, CanvasRate*160, CanvasRate*(top + 70), CanvasRate*200);
+        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top + 70), CanvasRate * 200);
     }
 }
 
