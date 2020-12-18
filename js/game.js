@@ -1,9 +1,9 @@
 const TO_RADIANS = Math.PI / 180;
 
 // rate
-const PAR_DINNER = 0.9;
-const PAR_LIKE = 0.05;
-const PAR_EATING_OUT = 0.07;
+const PAR_DINNER = 100;
+const PAR_LIKE = 2;
+const PAR_EATING_OUT = 3;
 
 // game setting
 class gameSetting {
@@ -16,13 +16,19 @@ class gameVariable {
     flg = 0;
     time = 0;
     ctx = null;
+    dinnerList = null;
+    todayDinner = "";
+    key = "dinner";
     imgHontai = new Image();
     imgCapsule = new Image();
     capsuleObj = new Array();
 
     // init
-    constructor(ctx) {
+    constructor(ctx, dinnerList) {
         this.ctx = ctx;
+        this.dinnerList = dinnerList;
+
+        // hontai
         this.imgHontai.src = "./img/hontai.png";
 
         // add normal
@@ -32,6 +38,19 @@ class gameVariable {
         for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_2.png"));
         for (let i = 0; i < 4; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_3.png"));
 
+        // random
+        let allPoint = PAR_DINNER + PAR_LIKE + PAR_EATING_OUT;
+        let rnd = random(allPoint);
+        if (rnd <= PAR_DINNER) {
+            this.key = "dinner";
+        } else if (rnd <= PAR_DINNER + PAR_LIKE) {
+            this.key = "like";
+        } else {
+            this.key = "eating_out";
+        }
+        let n = random(Object.keys(this.dinnerList[this.key]).length - 1);
+        this.todayDinner = this.dinnerList[this.key][n];
+        console.log("今日の夜ごはんは", this.todayDinner, "です。");
     }
 
     // img copy ...center
@@ -76,8 +95,8 @@ class capsuleObject {
 
 
 // game init
-function gameInitialize(ctx) {
-    game = new gameVariable(ctx);
+function gameInitialize(ctx, dinnerList) {
+    game = new gameVariable(ctx, dinnerList);
 
     // game start
     gameMain();
