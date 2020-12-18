@@ -128,7 +128,7 @@ function animation(time) {
 
     if (time > 270) {
         game.dialog = true;
-        game.dialogOpacity+=12;
+        game.dialogOpacity += 12;
         if (game.dialogOpacity > 255) game.dialogOpacity = 255;
     }
 };
@@ -186,16 +186,16 @@ function gameDraw() {
     // mozi
     if (game.dialog) {
         let top = 220;
-        game.ctx.fillStyle = `rgba(100, 149, 237, ${game.dialogOpacity/255})`;
+        game.ctx.fillStyle = `rgba(100, 149, 237, ${game.dialogOpacity / 255})`;
         game.ctx.fillRect(CanvasRate * 35, CanvasRate * (top - 5), CanvasRate * 250, CanvasRate * 170);
-        game.ctx.fillStyle = `rgba(238, 238, 238, ${game.dialogOpacity/255})`;
+        game.ctx.fillStyle = `rgba(238, 238, 238, ${game.dialogOpacity / 255})`;
         game.ctx.fillRect(CanvasRate * 40, CanvasRate * top, CanvasRate * 240, CanvasRate * 160);
-        game.ctx.fillStyle = `rgba(17, 2, 0, ${game.dialogOpacity/255})`;;
+        game.ctx.fillStyle = `rgba(17, 2, 0, ${game.dialogOpacity / 255})`;;
         game.ctx.textAlign = "center";
         game.ctx.textBaseline = "top";
-        game.ctx.font = "32px sans-serif";
+        game.ctx.font = `${CanvasRate * 32}px sans-serif`;
         game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top + 24), CanvasRate * 200);
-        game.ctx.font = "64px sans-serif";
+        game.ctx.font = `${CanvasRate * 64}px sans-serif`;
         game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top + 70), CanvasRate * 200);
     }
 }
