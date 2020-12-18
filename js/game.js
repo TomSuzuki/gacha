@@ -125,7 +125,7 @@ function animation(time) {
     let y = (250 + 118.0 * easeOutBounce(time / 120));
     game.imgTodayCapsule.setPoint(228, y);
 
-    if (time > 120) {
+    if (time > 180) {
         game.dialog = true;
     }
 };
