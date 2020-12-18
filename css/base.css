@@ -8,6 +8,7 @@ body {
     background-color: var(--dark_blue);
     background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, var(--blue)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, var(--blue)), color-stop(.75, var(--blue)), color-stop(.75, transparent), to(transparent));
     background-size: 14px 14px;
+    min-height: 100vh;
 }
 
 main {
