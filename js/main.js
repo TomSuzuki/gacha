@@ -11,10 +11,19 @@ function initialize() {
 	screenCanvas = document.getElementById('canvas');
 	screenCanvas.addEventListener('mousemove', mouseMove, true);
 	screenCanvas.addEventListener('click', onClick, false);
+
+	// width and height
+	let ph = document.documentElement.clientHeight - 100;
+	let pw = ph / 2;
+	screenCanvas.width = pw;
+	screenCanvas.height = ph;
+	let par = pw / 320;
+
+	// create
 	let ctx = screenCanvas.getContext('2d');
 	loadTextFile("./data/dinner.json", function (result) {
 		json = JSON.parse(result);
-		gameInitialize(ctx, json);
+		gameInitialize(ctx, json, par);
 	});
 }
 
@@ -33,7 +42,6 @@ function point() {
 
 // mouse click
 function onClick() {
-	console.log(mouse.x, mouse.y);
 	mouse.click = true;
 }
 

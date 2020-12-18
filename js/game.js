@@ -103,13 +103,13 @@ class capsuleObject {
 
     // draw
     draw(time) {
-        game.grotation(this.img, this.x, this.y, 50, 50, time / 12 + this.angle);
+        game.grotation(this.img, CanvasRate*this.x, CanvasRate*this.y, CanvasRate*50, CanvasRate*50, time / 12 + this.angle);
     }
 
     // draw for main
     drawF(time) {
         let y = -300 + 470 * this.y / 150 - 320;
-        game.grotation(this.img, 160, y, 200, 200, time / 12 + this.angle);
+        game.grotation(this.img, CanvasRate*160, CanvasRate*y, CanvasRate*200, CanvasRate*200, time / 12 + this.angle);
     }
 }
 
@@ -122,7 +122,7 @@ function startAnimation(b) {
 
 // animation
 function animation(time) {
-    let y = 250 + 118.0 * easeOutBounce(time / 120);
+    let y = (250 + 118.0 * easeOutBounce(time / 120));
     game.imgTodayCapsule.setPoint(228, y);
 
     if (time > 120) {
@@ -132,8 +132,10 @@ function animation(time) {
 
 
 // game init
-function gameInitialize(ctx, dinnerList) {
+var CanvasRate = 0;
+function gameInitialize(ctx, dinnerList, canvasRate) {
     game = new gameVariable(ctx, dinnerList);
+    CanvasRate = canvasRate;
 
     // game start
     gameMain();
@@ -161,10 +163,10 @@ function gameDraw() {
     // background
     game.ctx.beginPath();
     game.ctx.fillStyle = "#FFFFFF";
-    game.ctx.fillRect(0, 0, 320, 640);
+    game.ctx.fillRect(CanvasRate*0, CanvasRate*0, CanvasRate*320, CanvasRate*640);
 
     // backgroungd img
-    game.gcopy(game.imgBackground, 160, 320, 320, 640);
+    game.gcopy(game.imgBackground, CanvasRate*160, CanvasRate*320, CanvasRate*320, CanvasRate*640);
 
     // capsule
     for (var i in game.capsuleObj) {
@@ -173,7 +175,7 @@ function gameDraw() {
     game.imgTodayCapsule.draw(game.time / 5);
 
     // hontai
-    game.gcopy(game.imgHontai, 160, 220, 400, 380);
+    game.gcopy(game.imgHontai, CanvasRate*160, CanvasRate*220, CanvasRate*400, CanvasRate*380);
 
     // before capsule
     game.imgTodayCapsule.drawF(game.time / 5);
@@ -182,16 +184,16 @@ function gameDraw() {
     if (game.dialog) {
         let top = 220;
         game.ctx.fillStyle = "#4620A7";
-        game.ctx.fillRect(35, top - 5, 250, 170);
+        game.ctx.fillRect(CanvasRate*35, CanvasRate*(top - 5), CanvasRate*250, CanvasRate*170);
         game.ctx.fillStyle = "#EEEEEE";
-        game.ctx.fillRect(40, top, 240, 160);
+        game.ctx.fillRect(CanvasRate*40, CanvasRate*top, CanvasRate*240, CanvasRate*160);
         game.ctx.fillStyle = "#110200";
         game.ctx.textAlign = "center";
         game.ctx.textBaseline = "top";
         game.ctx.font = "32px sans-serif";
-        game.ctx.fillText("今日の夜ごはんは", 160, top + 24, 200);
+        game.ctx.fillText("今日の夜ごはんは", CanvasRate*160, CanvasRate*(top + 24), CanvasRate*200);
         game.ctx.font = "64px sans-serif";
-        game.ctx.fillText(game.todayDinner, 160, top + 70, 200);
+        game.ctx.fillText(game.todayDinner, CanvasRate*160, CanvasRate*(top + 70), CanvasRate*200);
     }
 }
 
