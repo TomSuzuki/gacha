@@ -57,7 +57,7 @@ class gameVariable {
             this.imgTodayCapsule = new capsuleObject("./img/capsule_3.png");
         }
         this.imgTodayCapsule.setPoint(-999, -999);
-        let n = random(Object.keys(this.dinnerList[this.key]).length - 1);
+        let n = random(Object.keys(this.dinnerList[this.key]).length);
         this.todayDinner = this.dinnerList[this.key][n];
         console.log("今日の夜ごはんは", this.todayDinner, "です。");
     }
