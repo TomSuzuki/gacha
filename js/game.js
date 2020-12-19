@@ -37,7 +37,7 @@ class gameVariable {
         this.imgBackground.src = "./img/background.png";
 
         // add normal
-        for (let i = 0; i < 48; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_1.png"));
+        for (let i = 0; i < 72; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_1.png"));
 
         // add rare
         for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_2.png"));
@@ -84,12 +84,14 @@ class capsuleObject {
     x = 0;
     y = 0;
     angle = 0;
+    directionRotation = 1;
 
     // init
     constructor(src) {
         this.x = random(170) + 80;
         this.y = random(120) + 100;
         this.angle = random(360);
+        if (random(2) == 1) this.directionRotation = -1;
 
         // set img
         this.img = new Image();
@@ -104,13 +106,13 @@ class capsuleObject {
 
     // draw
     draw(time) {
-        game.grotation(this.img, CanvasRate * this.x, CanvasRate * this.y, CanvasRate * 50, CanvasRate * 50, time / 12 + this.angle);
+        game.grotation(this.img, CanvasRate * this.x, CanvasRate * this.y, CanvasRate * 50, CanvasRate * 50, this.directionRotation * time / 12 + this.angle);
     }
 
     // draw for main
     drawF(time) {
         let y = -600 + 770 * this.y / 150 - 770;
-        game.grotation(this.img, CanvasRate * 160, CanvasRate * y, CanvasRate * 200, CanvasRate * 200, time / 12 + this.angle);
+        game.grotation(this.img, CanvasRate * 160, CanvasRate * y, CanvasRate * 200, CanvasRate * 200, this.directionRotation * time / 12 + this.angle);
     }
 }
 
@@ -194,9 +196,9 @@ function gameDraw() {
         game.ctx.textAlign = "center";
         game.ctx.textBaseline = "top";
         game.ctx.font = `${CanvasRate * 32}px sans-serif`;
-        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top + 24), CanvasRate * 200);
+        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top + 25), CanvasRate * 200);
         game.ctx.font = `${CanvasRate * 64}px sans-serif`;
-        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top + 70), CanvasRate * 200);
+        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top + 75), CanvasRate * 200);
     }
 }
 
