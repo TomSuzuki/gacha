@@ -1,6 +1,6 @@
 <p align="center">
  <img width="100px" src="https://raw.githubusercontent.com/TomSuzuki/gacha/main/img/capsule_2.png" align="center" alt="Icon" />
- <h2 align="center">夜ご飯ガチャ</h2>
+ <h2 align="center"><a href="https://tomsuzuki.github.io/gacha/">夜ご飯ガチャ</a></h2>
  <p align="center">JavaScriptの勉強で作った夜ごはんガチャ。</p>
 </p>
 
