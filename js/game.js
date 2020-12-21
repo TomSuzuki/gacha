@@ -41,11 +41,16 @@ class gameVariable {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
 
+        // init
+        this.isClicked = false;
+        this.isDialogOpen = false;
+
         // hontai
         this.imgBody.src = FILE_BODY;
         this.imgBackground.src = FILE_BACKGROUND;
 
         // add capsule
+        this.capsuleObjects = [];
         for (let i = 0; i < 72; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_DINNER));
         for (let i = 0; i < 3; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_LIKE));
         for (let i = 0; i < 4; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_EATING_OUT));
@@ -105,7 +110,7 @@ class gameVariable {
         y = CanvasRate * y;
         w = CanvasRate * w;
         h = CanvasRate * h;
-        Game.ctx.fillText(s, x, y, w, h);
+        this.ctx.fillText(s, x, y, w, h);
     }
 
     // display
@@ -237,46 +242,17 @@ class gameVariable {
         return bool;
     }
 
-}
+    main() {
+        // run
+        this.addTime();
 
-// draw capsule (in body)
-class capsuleObject {
-    // var
-    x = 0;
-    y = 0;
-    angle = 0;
-    directionRotation = 1;
-    capsuleImage = null;
+        // drop capsule animation
+        this.dropCapsule();
 
-    // init
-    constructor(src) {
-        // set position
-        this.x = random(170) + 80;
-        this.y = random(120) + 100;
-        this.angle = random(360);
-        if (random(2) == 1) this.directionRotation = -1;
-
-        // set img
-        this.capsuleImage = new Image();
-        this.capsuleImage.src = src;
+        // draw
+        this.display();
     }
 
-    // position
-    setPosition(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    // draw
-    display(frame, time) {
-        frame.grotation(this.capsuleImage, this.x, this.y, 50, 50, this.directionRotation * time / 12 + this.angle);
-    }
-
-    // draw for main
-    display_big(frame, time) {
-        let y = -600 + 770 * this.y / 150 - 770;
-        frame.grotation(this.capsuleImage, 160, y, 200, 200, this.directionRotation * time / 12 + this.angle);
-    }
 }
 
 // game init
@@ -286,45 +262,12 @@ function gameInitialize(ctx, dinnerList, canvasRate) {
     Game = new gameVariable(ctx, dinnerList);
 
     // game start
-    gameMain();
+    (function () {
+        // main
+        Game.main();
+
+        // loop
+        setTimeout(arguments.callee, GAME_FPS);
+    }());
 }
 
-// game main
-function gameMain() {
-
-    // run
-    Game.addTime();
-
-    // drop capsule animation
-    Game.dropCapsule();
-
-    // draw
-    Game.display();
-
-    // loop
-    setTimeout(arguments.callee, GAME_FPS);
-}
-
-// in mouse
-function inMouse(x, y, w, h) {
-    x = CanvasRate * x;
-    y = CanvasRate * y;
-    w = CanvasRate * w;
-    h = CanvasRate * h;
-    return (x < mouse.x && x + w >= mouse.x && y < mouse.y && y + h >= mouse.y);
-}
-
-// for random
-function random(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-// col hex -> rgb
-function hex2rgb(hex) {
-    if (hex.slice(0, 1) == "#") hex = hex.slice(1);
-    if (hex.length == 3) hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) + hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
-
-    return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(function (str) {
-        return parseInt(str, 16);
-    });
-}
