@@ -188,8 +188,9 @@ function gameDraw() {
     // mozi
     if (game.dialog) {
         let alpha = game.dialogOpacity / 255;
-        let top_result = 80;
-        let top_reload = 300;
+        let top_result = 100;
+        let top_reload = 350;
+        let top_tweet = 450;
 
         // shadow
         game.ctx.fillStyle = `rgba(0, 0, 0, ${0.75 * alpha})`;
@@ -221,6 +222,22 @@ function gameDraw() {
         game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         game.ctx.font = `${CanvasRate * 48}px sans-serif`;
         game.ctx.fillText("もう一度", CanvasRate * 160, CanvasRate * (top_reload + 18), CanvasRate * 220, CanvasRate * 80);
+
+        // tweet
+        game.ctx.fillStyle = `rgba(135, 206, 255, ${alpha})`;
+        if (button(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80)) {
+            console.log("aa");
+            game.ctx.fillStyle = `rgba(108, 166, 205, ${alpha})`;
+            if (getClick()) {
+                // location.href = "twitter://post?message=" + encodeURIComponent(document.title) + " " + encodeURIComponent(location.href);
+                window.open(`http://twitter.com/share?text=今日の夜ごはんは ${game.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+            }
+
+        }
+        game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80);
+        game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        game.ctx.font = `${CanvasRate * 48}px sans-serif`;
+        game.ctx.fillText("ツイート", CanvasRate * 160, CanvasRate * (top_tweet + 18), CanvasRate * 220, CanvasRate * 80);
 
     }
 }
