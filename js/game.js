@@ -229,7 +229,6 @@ function gameDraw() {
             console.log("aa");
             game.ctx.fillStyle = `rgba(108, 166, 205, ${alpha})`;
             if (getClick()) {
-                // location.href = "twitter://post?message=" + encodeURIComponent(document.title) + " " + encodeURIComponent(location.href);
                 window.open(`http://twitter.com/share?text=今日の夜ごはんは ${game.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
             }
 
