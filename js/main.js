@@ -35,28 +35,3 @@ function initialize() {
 		gameInitialize(ctx, json, par);
 	});
 }
-
-// mouse move event
-function mouseMove(event) {
-	mouse.x = event.clientX - screenCanvas.offsetLeft + window.pageXOffset;
-	mouse.y = event.clientY - screenCanvas.offsetTop + window.pageYOffset;
-}
-
-// mouse point
-function point() {
-	this.x = 0;
-	this.y = 0;
-	this.click = false;
-}
-
-// mouse click
-function onClick() {
-	mouse.click = true;
-}
-
-// get click
-function getClick() {
-	let b = mouse.click;
-	mouse.click = false;
-	return b;
-}
