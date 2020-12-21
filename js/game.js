@@ -38,7 +38,7 @@ class gameVariable {
         // ctx
         this.ctx = ctx;
         this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "top";
+        this.ctx.textBaseline = "middle";
 
         // hontai
         this.imgBody.src = FILE_BODY;
@@ -129,6 +129,41 @@ class gameVariable {
 
         // before capsule
         this.imgTodayCapsule.display_big(this.time);
+
+        // dialog
+        if (this.dialog) {
+            // set position
+            let alpha = this.dialogOpacity / 255;
+            let top_result = 100;
+            let top_reload = 350;
+            let top_tweet = 450;
+
+            // shadow
+            this.ctx.fillStyle = `rgba(0, 0, 0, ${0.75 * alpha})`;
+            this.rect(0, 0, 320, 640);
+
+            // result dialog
+            this.ctx.fillStyle = `rgba(100, 149, 237, ${alpha})`;
+            this.rect(35, top_result - 5, 250, 170);
+            this.ctx.fillStyle = `rgba(238, 238, 238, ${alpha})`;
+            this.rect(40, top_result, 240, 160);
+            this.ctx.fillStyle = `rgba(17, 2, 0, ${alpha})`;
+            this.ctx.font = `${CanvasRate * 32}px sans-serif`;
+            this.text("今日の夜ごはんは", 160, top_result + 40, 200);
+            this.ctx.font = `${CanvasRate * 64}px sans-serif`;
+            this.text(this.todayDinner, 160, top_result + 107, 200);
+
+            // reload
+            if (this.button("もう一度", "CC0000", 50, top_reload, 220, 80, alpha)) {
+                location.reload();
+            };
+
+            // tweet
+            if (this.button("ツイート", "1DA1F3", 50, top_tweet, 220, 80, alpha)) {
+                this.tweet();
+            };
+
+        }
     }
 
     // time
@@ -170,8 +205,28 @@ class gameVariable {
 
     // button
     button(text, col, x, y, w, h, alpha) {
+        // init
+        let bool = false;
         let rgb = hex2rgb(col);
+
+        // background
+        this.ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+        this.rect(x, y, w, h);
+
+        // mosue
+        if (inMouse(x, y, w, h)) {
+            alpha = 0.6 * alpha;
+            if (getClick()) bool = true;
+        }
+
+        // display
         this.ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+        this.rect(x, y, w, h);
+        this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        this.ctx.font = `${CanvasRate * 48}px sans-serif`;
+        this.text(text, x + w / 2, y + h / 2, w, h);
+
+        return bool;
     }
 
 }
@@ -234,68 +289,10 @@ function gameMain() {
     game.dropCapsule();
 
     // draw
-    draws();
+    game.display();
 
     // loop
     setTimeout(arguments.callee, GAME_FPS);
-}
-
-// game draw
-function draws() {
-    // game
-    game.display();
-
-    // mozi
-    if (game.dialog) {
-        // set position
-        let alpha = game.dialogOpacity / 255;
-        let top_result = 100;
-        let top_reload = 350;
-        let top_tweet = 450;
-
-        // shadow
-        game.ctx.fillStyle = `rgba(0, 0, 0, ${0.75 * alpha})`;
-        game.rect(0, 0, 320, 640);
-
-        // result dialog
-        game.ctx.fillStyle = `rgba(100, 149, 237, ${alpha})`;
-        game.rect(35, top_result - 5, 250, 170);
-        game.ctx.fillStyle = `rgba(238, 238, 238, ${alpha})`;
-        game.rect(40, top_result, 240, 160);
-        game.ctx.fillStyle = `rgba(17, 2, 0, ${alpha})`;
-        game.ctx.font = `${CanvasRate * 32}px sans-serif`;
-        game.text("今日の夜ごはんは", 160, top_result + 25, 200);
-        game.ctx.font = `${CanvasRate * 64}px sans-serif`;
-        game.text(game.todayDinner, 160, top_result + 75, 200);
-
-        // reload
-        game.ctx.fillStyle = `rgba(205, 51, 51, ${alpha})`;
-        if (inMouse(50, top_reload, 220, 80)) {
-            game.ctx.fillStyle = `rgba(139, 35, 35, ${alpha})`;
-            if (getClick()) {
-                location.reload();
-            }
-        }
-        game.rect(50, top_reload, 220, 80);
-        game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        game.ctx.font = `${CanvasRate * 48}px sans-serif`;
-        game.text("もう一度", 160, top_reload + 18, 220, 80);
-
-        // tweet
-        game.ctx.fillStyle = `rgba(135, 206, 255, ${alpha})`;
-        if (inMouse(50, top_tweet, 220, 80)) {
-            console.log("aa");
-            game.ctx.fillStyle = `rgba(108, 166, 205, ${alpha})`;
-            if (getClick()) {
-                game.tweet();
-            }
-        }
-        game.rect(50, top_tweet, 220, 80);
-        game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        game.ctx.font = `${CanvasRate * 48}px sans-serif`;
-        game.text("ツイート", 160, top_tweet + 18, 220, 80);
-
-    }
 }
 
 // in mouse
