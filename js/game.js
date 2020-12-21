@@ -1,26 +1,32 @@
+// setting
 const TO_RADIANS = Math.PI / 180;
+const GAME_FPS = 1000 / 60;
 
 // rate
 const PAR_DINNER = 100;
 const PAR_LIKE = 2;
 const PAR_EATING_OUT = 3;
 
-// game setting
-class gameSetting {
-    fps = 30;
-}
+// file path
+const FILE_BODY = "./img/hontai.png";
+const FILE_BACKGROUND = "./img/background.png";
+const FILE_CAPSUEL_DINNER = "./img/capsule_1.png";
+const FILE_CAPSUEL_LIKE = "./img/capsule_2.png";
+const FILE_CAPSUEL_EATING_OUT = "./img/capsule_3.png";
+
+// other
+var CanvasRate = 1.0;
+var game;
 
 // game variable
-let game;
 class gameVariable {
     flg = 0;
     time = 0;
     animationTime = 0;
     ctx = null;
-    dinnerList = null;
     todayDinner = "";
     key = "dinner";
-    imgHontai = new Image();
+    imgBody = new Image();
     capsuleObj = new Array();
     imgTodayCapsule = new Image();
     imgBackground = new Image();
@@ -29,46 +35,55 @@ class gameVariable {
 
     // init
     constructor(ctx, dinnerList) {
+        // ctx
         this.ctx = ctx;
-        this.dinnerList = dinnerList;
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "top";
 
         // hontai
-        this.imgHontai.src = "./img/hontai.png";
-        this.imgBackground.src = "./img/background.png";
+        this.imgBody.src = FILE_BODY;
+        this.imgBackground.src = FILE_BACKGROUND;
 
         // add normal
-        for (let i = 0; i < 72; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_1.png"));
+        for (let i = 0; i < 72; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_DINNER));
 
         // add rare
-        for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_2.png"));
-        for (let i = 0; i < 4; i++) this.capsuleObj.push(new capsuleObject("./img/capsule_3.png"));
+        for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_LIKE));
+        for (let i = 0; i < 4; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_EATING_OUT));
 
         // random
         let allPoint = PAR_DINNER + PAR_LIKE + PAR_EATING_OUT;
         let rnd = random(allPoint);
         if (rnd <= PAR_DINNER) {
             this.key = "dinner";
-            this.imgTodayCapsule = new capsuleObject("./img/capsule_1.png");
+            this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_DINNER);
         } else if (rnd <= PAR_DINNER + PAR_LIKE) {
             this.key = "like";
-            this.imgTodayCapsule = new capsuleObject("./img/capsule_2.png");
+            this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_LIKE);
         } else {
             this.key = "eating_out";
-            this.imgTodayCapsule = new capsuleObject("./img/capsule_3.png");
+            this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_EATING_OUT);
         }
+        let n = random(Object.keys(dinnerList[this.key]).length);
+        this.todayDinner = dinnerList[this.key][n];
         this.imgTodayCapsule.setPoint(-999, -999);
-        let n = random(Object.keys(this.dinnerList[this.key]).length);
-        this.todayDinner = this.dinnerList[this.key][n];
-        console.log("今日の夜ごはんは", this.todayDinner, "です。");
     }
 
     // img copy ...center
     gcopy(img, x, y, w, h) {
+        x = CanvasRate * x;
+        y = CanvasRate * y;
+        w = CanvasRate * w;
+        h = CanvasRate * h;
         this.ctx.drawImage(img, x - w / 2, y - h / 2, w, h)
     }
 
     // img rotation
     grotation(img, x, y, w, h, angle) {
+        x = CanvasRate * x;
+        y = CanvasRate * y;
+        w = CanvasRate * w;
+        h = CanvasRate * h;
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.rotate(angle * TO_RADIANS);
@@ -76,26 +91,110 @@ class gameVariable {
         this.ctx.restore();
     }
 
+    // rect
+    rect(x, y, w, h) {
+        x = CanvasRate * x;
+        y = CanvasRate * y;
+        w = CanvasRate * w;
+        h = CanvasRate * h;
+        this.ctx.fillRect(x, y, w, h);
+    }
+
+    // text
+    text(s, x, y, w, h) {
+        x = CanvasRate * x;
+        y = CanvasRate * y;
+        w = CanvasRate * w;
+        h = CanvasRate * h;
+        game.ctx.fillText(s, x, y, w, h);
+    }
+
+    // display
+    display() {
+        // background
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillRect(CanvasRate * 0, CanvasRate * 0, CanvasRate * 320, CanvasRate * 640);
+
+        // backgroungd img
+        this.gcopy(this.imgBackground, 160, 320, 320, 640);
+
+        // capsule
+        for (var i in this.capsuleObj) {
+            this.capsuleObj[i].display(this.time);
+        }
+
+        // hontai
+        this.gcopy(this.imgBody, 160, 220, 400, 380);
+
+        // before capsule
+        this.imgTodayCapsule.display_big(this.time);
+    }
+
+    // time
+    addTime() {
+        this.time++;
+    }
+
+    // drop capsule animation
+    dropCapsuleAnimation() {
+        let animationFrame = this.time - this.animationTime;
+        let y = (250 + 118.0 * easeOutBounce(animationFrame / 60));
+        this.imgTodayCapsule.setPoint(228, y);
+
+        if (animationFrame > 80) {
+            this.dialog = true;
+            this.dialogOpacity += 12;
+            if (this.dialogOpacity > 255) this.dialogOpacity = 255;
+        }
+    }
+
+    // start animation
+    dropCapsuleStart(bool) {
+        if (!bool) return;
+        this.flg = 1;
+        this.animationTime = this.time;
+    }
+
+
+    // drop capsule
+    dropCapsule() {
+        if (this.flg == 0) this.dropCapsuleStart(getClick());
+        else if (this.flg == 1) this.dropCapsuleAnimation();
+    }
+
+    // tweet
+    tweet() {
+        window.open(`http://twitter.com/share?text=今日の夜ごはんは ${this.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+    }
+
+    // button
+    button(text, col, x, y, w, h, alpha) {
+        let rgb = hex2rgb(col);
+        this.ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+    }
+
 }
 
 // draw capsule (in hontai)
 class capsuleObject {
-    img = null;
     x = 0;
     y = 0;
     angle = 0;
     directionRotation = 1;
+    capsuleImage = null;
 
     // init
     constructor(src) {
+        // set position
         this.x = random(170) + 80;
         this.y = random(120) + 100;
         this.angle = random(360);
         if (random(2) == 1) this.directionRotation = -1;
 
         // set img
-        this.img = new Image();
-        this.img.src = src;
+        this.capsuleImage = new Image();
+        this.capsuleImage.src = src;
     }
 
     // point
@@ -105,39 +204,18 @@ class capsuleObject {
     }
 
     // draw
-    draw(time) {
-        game.grotation(this.img, CanvasRate * this.x, CanvasRate * this.y, CanvasRate * 50, CanvasRate * 50, this.directionRotation * time / 12 + this.angle);
+    display(time) {
+        game.grotation(this.capsuleImage, this.x, this.y, 50, 50, this.directionRotation * time / 12 + this.angle);
     }
 
     // draw for main
-    drawF(time) {
+    display_big(time) {
         let y = -600 + 770 * this.y / 150 - 770;
-        game.grotation(this.img, CanvasRate * 160, CanvasRate * y, CanvasRate * 200, CanvasRate * 200, this.directionRotation * time / 12 + this.angle);
+        game.grotation(this.capsuleImage, 160, y, 200, 200, this.directionRotation * time / 12 + this.angle);
     }
 }
-
-// start animation
-function startAnimation(b) {
-    if (!b) return;
-    game.flg = 1;
-    game.animationTime = game.time;
-}
-
-// animation
-function animation(time) {
-    let y = (250 + 118.0 * easeOutBounce(time / 160));
-    game.imgTodayCapsule.setPoint(228, y);
-
-    if (time > 270) {
-        game.dialog = true;
-        game.dialogOpacity += 12;
-        if (game.dialogOpacity > 255) game.dialogOpacity = 255;
-    }
-};
-
 
 // game init
-var CanvasRate = 0;
 function gameInitialize(ctx, dinnerList, canvasRate) {
     game = new gameVariable(ctx, dinnerList);
     CanvasRate = canvasRate;
@@ -150,43 +228,26 @@ function gameInitialize(ctx, dinnerList, canvasRate) {
 function gameMain() {
 
     // run
-    game.time++
+    game.addTime();
 
-    // animation
-    if (game.flg == 0) startAnimation(getClick());
-    else if (game.flg == 1) animation(game.time - game.animationTime);
+    // drop capsule animation
+    game.dropCapsule();
 
     // draw
-    gameDraw();
+    draws();
 
     // loop
-    setTimeout(arguments.callee, gameSetting.fps);
+    setTimeout(arguments.callee, GAME_FPS);
 }
 
 // game draw
-function gameDraw() {
-    // background
-    game.ctx.beginPath();
-    game.ctx.fillStyle = "#FFFFFF";
-    game.ctx.fillRect(CanvasRate * 0, CanvasRate * 0, CanvasRate * 320, CanvasRate * 640);
-
-    // backgroungd img
-    game.gcopy(game.imgBackground, CanvasRate * 160, CanvasRate * 320, CanvasRate * 320, CanvasRate * 640);
-
-    // capsule
-    for (var i in game.capsuleObj) {
-        game.capsuleObj[i].draw(game.time);
-    }
-    game.imgTodayCapsule.draw(game.time / 5);
-
-    // hontai
-    game.gcopy(game.imgHontai, CanvasRate * 160, CanvasRate * 220, CanvasRate * 400, CanvasRate * 380);
-
-    // before capsule
-    game.imgTodayCapsule.drawF(game.time / 5);
+function draws() {
+    // game
+    game.display();
 
     // mozi
     if (game.dialog) {
+        // set position
         let alpha = game.dialogOpacity / 255;
         let top_result = 100;
         let top_reload = 350;
@@ -194,55 +255,55 @@ function gameDraw() {
 
         // shadow
         game.ctx.fillStyle = `rgba(0, 0, 0, ${0.75 * alpha})`;
-        game.ctx.fillRect(CanvasRate * 0, CanvasRate * 0, CanvasRate * 320, CanvasRate * 640);
+        game.rect(0, 0, 320, 640);
 
         // result dialog
         game.ctx.fillStyle = `rgba(100, 149, 237, ${alpha})`;
-        game.ctx.fillRect(CanvasRate * 35, CanvasRate * (top_result - 5), CanvasRate * 250, CanvasRate * 170);
+        game.rect(35, top_result - 5, 250, 170);
         game.ctx.fillStyle = `rgba(238, 238, 238, ${alpha})`;
-        game.ctx.fillRect(CanvasRate * 40, CanvasRate * top_result, CanvasRate * 240, CanvasRate * 160);
+        game.rect(40, top_result, 240, 160);
         game.ctx.fillStyle = `rgba(17, 2, 0, ${alpha})`;
-        game.ctx.textAlign = "center";
-        game.ctx.textBaseline = "top";
         game.ctx.font = `${CanvasRate * 32}px sans-serif`;
-        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top_result + 25), CanvasRate * 200);
+        game.text("今日の夜ごはんは", 160, top_result + 25, 200);
         game.ctx.font = `${CanvasRate * 64}px sans-serif`;
-        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top_result + 75), CanvasRate * 200);
+        game.text(game.todayDinner, 160, top_result + 75, 200);
 
         // reload
         game.ctx.fillStyle = `rgba(205, 51, 51, ${alpha})`;
-        if (button(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80)) {
-            console.log("aa");
+        if (inMouse(50, top_reload, 220, 80)) {
             game.ctx.fillStyle = `rgba(139, 35, 35, ${alpha})`;
             if (getClick()) {
                 location.reload();
             }
         }
-        game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80);
+        game.rect(50, top_reload, 220, 80);
         game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         game.ctx.font = `${CanvasRate * 48}px sans-serif`;
-        game.ctx.fillText("もう一度", CanvasRate * 160, CanvasRate * (top_reload + 18), CanvasRate * 220, CanvasRate * 80);
+        game.text("もう一度", 160, top_reload + 18, 220, 80);
 
         // tweet
         game.ctx.fillStyle = `rgba(135, 206, 255, ${alpha})`;
-        if (button(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80)) {
+        if (inMouse(50, top_tweet, 220, 80)) {
             console.log("aa");
             game.ctx.fillStyle = `rgba(108, 166, 205, ${alpha})`;
             if (getClick()) {
-                window.open(`http://twitter.com/share?text=今日の夜ごはんは ${game.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+                game.tweet();
             }
-
         }
-        game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80);
+        game.rect(50, top_tweet, 220, 80);
         game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         game.ctx.font = `${CanvasRate * 48}px sans-serif`;
-        game.ctx.fillText("ツイート", CanvasRate * 160, CanvasRate * (top_tweet + 18), CanvasRate * 220, CanvasRate * 80);
+        game.text("ツイート", 160, top_tweet + 18, 220, 80);
 
     }
 }
 
 // in mouse
-function button(x, y, w, h) {
+function inMouse(x, y, w, h) {
+    x = CanvasRate * x;
+    y = CanvasRate * y;
+    w = CanvasRate * w;
+    h = CanvasRate * h;
     return (x < mouse.x && x + w >= mouse.x && y < mouse.y && y + h >= mouse.y);
 }
 
@@ -251,18 +312,12 @@ function random(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-function easeOutBounce(time) {
-    const n1 = 7.5625;
-    const d1 = 2.75;
-    let x = Math.min(time, 1);
+// col hex -> rgb
+function hex2rgb(hex) {
+    if (hex.slice(0, 1) == "#") hex = hex.slice(1);
+    if (hex.length == 3) hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) + hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
 
-    if (x < 1 / d1) {
-        return n1 * x * x;
-    } else if (x < 2 / d1) {
-        return n1 * (x -= 1.5 / d1) * x + 0.75;
-    } else if (x < 2.5 / d1) {
-        return n1 * (x -= 2.25 / d1) * x + 0.9375;
-    } else {
-        return n1 * (x -= 2.625 / d1) * x + 0.984375;
-    }
+    return [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(function (str) {
+        return parseInt(str, 16);
+    });
 }
