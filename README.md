@@ -16,7 +16,7 @@
 
 
 # 夜ごはんガチャ
-JavaScriptの勉強で作った夜ごはん飯ガチャ。とりあえず動く状態。動作はGoogle Chromeを想定。  
+JavaScriptの勉強で作った夜ごはんガチャ。とりあえず動く状態。動作はGoogle Chromeを想定。  
 中身はスパゲッティ。
   
 - URL: [https://tomsuzuki.github.io/gacha/](https://tomsuzuki.github.io/gacha/)
