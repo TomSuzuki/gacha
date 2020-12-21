@@ -213,6 +213,9 @@ function gameDraw() {
         if (button(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80)) {
             console.log("aa");
             game.ctx.fillStyle = `rgba(139, 35, 35, ${alpha})`;
+            if (getClick()) {
+                location.reload();
+            }
         }
         game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80);
         game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
