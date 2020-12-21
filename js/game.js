@@ -3,7 +3,7 @@ const TO_RADIANS = Math.PI / 180;
 const GAME_FPS = 1000 / 60;
 
 // rate
-const PAR_DINNER = 100;
+const PAR_DINNER = 160;
 const PAR_LIKE = 2;
 const PAR_EATING_OUT = 3;
 
@@ -16,21 +16,22 @@ const FILE_CAPSUEL_EATING_OUT = "./img/capsule_3.png";
 
 // other
 var CanvasRate = 1.0;
-var game;
+var Game;
 
 // game variable
 class gameVariable {
-    flg = 0;
-    time = 0;
-    animationTime = 0;
+    // var
     ctx = null;
-    todayDinner = "";
-    key = "dinner";
+    isClicked = false;
+    isDialogOpen = false;
+    time = 0;
+    timeOfClicked = 0;
+    todayDinnerName = "";
+    todayDinnerType = "dinner";
+    capsuleObjects = [];
     imgBody = new Image();
-    capsuleObj = new Array();
     imgTodayCapsule = new Image();
     imgBackground = new Image();
-    dialog = false;
     dialogOpacity = 0;
 
     // init
@@ -44,29 +45,27 @@ class gameVariable {
         this.imgBody.src = FILE_BODY;
         this.imgBackground.src = FILE_BACKGROUND;
 
-        // add normal
-        for (let i = 0; i < 72; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_DINNER));
-
-        // add rare
-        for (let i = 0; i < 3; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_LIKE));
-        for (let i = 0; i < 4; i++) this.capsuleObj.push(new capsuleObject(FILE_CAPSUEL_EATING_OUT));
+        // add capsule
+        for (let i = 0; i < 72; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_DINNER));
+        for (let i = 0; i < 3; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_LIKE));
+        for (let i = 0; i < 4; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_EATING_OUT));
 
         // random
         let allPoint = PAR_DINNER + PAR_LIKE + PAR_EATING_OUT;
         let rnd = random(allPoint);
         if (rnd <= PAR_DINNER) {
-            this.key = "dinner";
+            this.todayDinnerType = "dinner";
             this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_DINNER);
         } else if (rnd <= PAR_DINNER + PAR_LIKE) {
-            this.key = "like";
+            this.todayDinnerType = "like";
             this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_LIKE);
         } else {
-            this.key = "eating_out";
+            this.todayDinnerType = "eating_out";
             this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_EATING_OUT);
         }
-        let n = random(Object.keys(dinnerList[this.key]).length);
-        this.todayDinner = dinnerList[this.key][n];
-        this.imgTodayCapsule.setPoint(-999, -999);
+        let n = random(Object.keys(dinnerList[this.todayDinnerType]).length);
+        this.todayDinnerName = dinnerList[this.todayDinnerType][n];
+        this.imgTodayCapsule.setPosition(-999, -999);
     }
 
     // img copy ...center
@@ -106,7 +105,7 @@ class gameVariable {
         y = CanvasRate * y;
         w = CanvasRate * w;
         h = CanvasRate * h;
-        game.ctx.fillText(s, x, y, w, h);
+        Game.ctx.fillText(s, x, y, w, h);
     }
 
     // display
@@ -120,18 +119,21 @@ class gameVariable {
         this.gcopy(this.imgBackground, 160, 320, 320, 640);
 
         // capsule
-        for (var i in this.capsuleObj) {
-            this.capsuleObj[i].display(this.time);
+        for (var i in this.capsuleObjects) {
+            this.capsuleObjects[i].display(this, this.time);
         }
 
-        // hontai
+        // drop mini capsule
+        this.imgTodayCapsule.display(this, this.time);
+
+        // body
         this.gcopy(this.imgBody, 160, 220, 400, 380);
 
-        // before capsule
-        this.imgTodayCapsule.display_big(this.time);
+        // big capsule
+        this.imgTodayCapsule.display_big(this, this.time);
 
         // dialog
-        if (this.dialog) {
+        if (this.isDialogOpen) {
             // set position
             let alpha = this.dialogOpacity / 255;
             let top_result = 100;
@@ -151,7 +153,7 @@ class gameVariable {
             this.ctx.font = `${CanvasRate * 32}px sans-serif`;
             this.text("今日の夜ごはんは", 160, top_result + 40, 200);
             this.ctx.font = `${CanvasRate * 64}px sans-serif`;
-            this.text(this.todayDinner, 160, top_result + 107, 200);
+            this.text(this.todayDinnerName, 160, top_result + 107, 200);
 
             // reload
             if (this.button("もう一度", "CC0000", 50, top_reload, 220, 80, alpha)) {
@@ -173,12 +175,16 @@ class gameVariable {
 
     // drop capsule animation
     dropCapsuleAnimation() {
-        let animationFrame = this.time - this.animationTime;
-        let y = (250 + 118.0 * easeOutBounce(animationFrame / 60));
-        this.imgTodayCapsule.setPoint(228, y);
+        // set time
+        let animationTime = this.time - this.timeOfClicked;
 
-        if (animationFrame > 80) {
-            this.dialog = true;
+        // img position
+        let y = (250 + 118.0 * easeOutBounce(animationTime / 60));
+        this.imgTodayCapsule.setPosition(228, y);
+
+        // for dialog
+        if (animationTime > 80) {
+            this.isDialogOpen = true;
             this.dialogOpacity += 12;
             if (this.dialogOpacity > 255) this.dialogOpacity = 255;
         }
@@ -187,20 +193,22 @@ class gameVariable {
     // start animation
     dropCapsuleStart(bool) {
         if (!bool) return;
-        this.flg = 1;
-        this.animationTime = this.time;
+
+        // click!
+        this.isClicked = true;
+        this.timeOfClicked = this.time;
     }
 
 
     // drop capsule
     dropCapsule() {
-        if (this.flg == 0) this.dropCapsuleStart(getClick());
-        else if (this.flg == 1) this.dropCapsuleAnimation();
+        if (!this.isClicked) this.dropCapsuleStart(getClick());
+        else this.dropCapsuleAnimation();
     }
 
     // tweet
     tweet() {
-        window.open(`http://twitter.com/share?text=今日の夜ごはんは ${this.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+        window.open(`http://twitter.com/share?text=今日の夜ごはんは ${this.todayDinnerName} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
     }
 
     // button
@@ -213,7 +221,7 @@ class gameVariable {
         this.ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
         this.rect(x, y, w, h);
 
-        // mosue
+        // mosue hover
         if (inMouse(x, y, w, h)) {
             alpha = 0.6 * alpha;
             if (getClick()) bool = true;
@@ -231,8 +239,9 @@ class gameVariable {
 
 }
 
-// draw capsule (in hontai)
+// draw capsule (in body)
 class capsuleObject {
+    // var
     x = 0;
     y = 0;
     angle = 0;
@@ -252,28 +261,29 @@ class capsuleObject {
         this.capsuleImage.src = src;
     }
 
-    // point
-    setPoint(x, y) {
+    // position
+    setPosition(x, y) {
         this.x = x;
         this.y = y;
     }
 
     // draw
-    display(time) {
-        game.grotation(this.capsuleImage, this.x, this.y, 50, 50, this.directionRotation * time / 12 + this.angle);
+    display(frame, time) {
+        frame.grotation(this.capsuleImage, this.x, this.y, 50, 50, this.directionRotation * time / 12 + this.angle);
     }
 
     // draw for main
-    display_big(time) {
+    display_big(frame, time) {
         let y = -600 + 770 * this.y / 150 - 770;
-        game.grotation(this.capsuleImage, 160, y, 200, 200, this.directionRotation * time / 12 + this.angle);
+        frame.grotation(this.capsuleImage, 160, y, 200, 200, this.directionRotation * time / 12 + this.angle);
     }
 }
 
 // game init
 function gameInitialize(ctx, dinnerList, canvasRate) {
-    game = new gameVariable(ctx, dinnerList);
+    // init
     CanvasRate = canvasRate;
+    Game = new gameVariable(ctx, dinnerList);
 
     // game start
     gameMain();
@@ -283,13 +293,13 @@ function gameInitialize(ctx, dinnerList, canvasRate) {
 function gameMain() {
 
     // run
-    game.addTime();
+    Game.addTime();
 
     // drop capsule animation
-    game.dropCapsule();
+    Game.dropCapsule();
 
     // draw
-    game.display();
+    Game.display();
 
     // loop
     setTimeout(arguments.callee, GAME_FPS);
