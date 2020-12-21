@@ -213,7 +213,7 @@ class gameVariable {
 
     // tweet
     tweet() {
-        window.open(`http://twitter.com/share?text=今日の夜ごはんは ${this.todayDinnerName} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+        window.open(`http://twitter.com/share?text=今日の夜ごはんは ${this.todayDinnerName} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ごはんガチャ`);
     }
 
     // button
