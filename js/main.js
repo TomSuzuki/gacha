@@ -9,8 +9,6 @@ window.addEventListener('load', function () {
 // init
 function initialize() {
 	screenCanvas = document.getElementById('canvas');
-	screenCanvas.addEventListener('mousemove', mouseMove, true);
-	screenCanvas.addEventListener('click', onClick, false);
 
 	// width and height
 	let ph = document.documentElement.clientHeight * 0.85;
@@ -26,6 +24,10 @@ function initialize() {
 		screenCanvas.height = ph;
 	}
 
+	// mouse
+	screenCanvas.addEventListener('mousemove', mouseMove, true);
+	screenCanvas.addEventListener('click', onClick, false);
+
 	// create
 	let ctx = screenCanvas.getContext('2d');
 	loadTextFile("./data/dinner.json", function (result) {
@@ -36,8 +38,8 @@ function initialize() {
 
 // mouse move event
 function mouseMove(event) {
-	mouse.x = event.clientX - screenCanvas.offsetLeft;
-	mouse.y = event.clientY - screenCanvas.offsetTop;
+	mouse.x = event.clientX - screenCanvas.offsetLeft + window.pageXOffset;
+	mouse.y = event.clientY - screenCanvas.offsetTop + window.pageYOffset;
 }
 
 // mouse point

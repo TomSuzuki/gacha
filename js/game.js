@@ -187,19 +187,63 @@ function gameDraw() {
 
     // mozi
     if (game.dialog) {
-        let top = 220;
-        game.ctx.fillStyle = `rgba(100, 149, 237, ${game.dialogOpacity / 255})`;
-        game.ctx.fillRect(CanvasRate * 35, CanvasRate * (top - 5), CanvasRate * 250, CanvasRate * 170);
-        game.ctx.fillStyle = `rgba(238, 238, 238, ${game.dialogOpacity / 255})`;
-        game.ctx.fillRect(CanvasRate * 40, CanvasRate * top, CanvasRate * 240, CanvasRate * 160);
-        game.ctx.fillStyle = `rgba(17, 2, 0, ${game.dialogOpacity / 255})`;;
+        let alpha = game.dialogOpacity / 255;
+        let top_result = 100;
+        let top_reload = 350;
+        let top_tweet = 450;
+
+        // shadow
+        game.ctx.fillStyle = `rgba(0, 0, 0, ${0.75 * alpha})`;
+        game.ctx.fillRect(CanvasRate * 0, CanvasRate * 0, CanvasRate * 320, CanvasRate * 640);
+
+        // result dialog
+        game.ctx.fillStyle = `rgba(100, 149, 237, ${alpha})`;
+        game.ctx.fillRect(CanvasRate * 35, CanvasRate * (top_result - 5), CanvasRate * 250, CanvasRate * 170);
+        game.ctx.fillStyle = `rgba(238, 238, 238, ${alpha})`;
+        game.ctx.fillRect(CanvasRate * 40, CanvasRate * top_result, CanvasRate * 240, CanvasRate * 160);
+        game.ctx.fillStyle = `rgba(17, 2, 0, ${alpha})`;
         game.ctx.textAlign = "center";
         game.ctx.textBaseline = "top";
         game.ctx.font = `${CanvasRate * 32}px sans-serif`;
-        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top + 25), CanvasRate * 200);
+        game.ctx.fillText("今日の夜ごはんは", CanvasRate * 160, CanvasRate * (top_result + 25), CanvasRate * 200);
         game.ctx.font = `${CanvasRate * 64}px sans-serif`;
-        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top + 75), CanvasRate * 200);
+        game.ctx.fillText(game.todayDinner, CanvasRate * 160, CanvasRate * (top_result + 75), CanvasRate * 200);
+
+        // reload
+        game.ctx.fillStyle = `rgba(205, 51, 51, ${alpha})`;
+        if (button(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80)) {
+            console.log("aa");
+            game.ctx.fillStyle = `rgba(139, 35, 35, ${alpha})`;
+            if (getClick()) {
+                location.reload();
+            }
+        }
+        game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_reload, CanvasRate * 220, CanvasRate * 80);
+        game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        game.ctx.font = `${CanvasRate * 48}px sans-serif`;
+        game.ctx.fillText("もう一度", CanvasRate * 160, CanvasRate * (top_reload + 18), CanvasRate * 220, CanvasRate * 80);
+
+        // tweet
+        game.ctx.fillStyle = `rgba(135, 206, 255, ${alpha})`;
+        if (button(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80)) {
+            console.log("aa");
+            game.ctx.fillStyle = `rgba(108, 166, 205, ${alpha})`;
+            if (getClick()) {
+                window.open(`http://twitter.com/share?text=今日の夜ごはんは ${game.todayDinner} です。 &url=https://tomsuzuki.github.io/gacha/ &hashtags=夜ご飯ガチャ`);
+            }
+
+        }
+        game.ctx.fillRect(CanvasRate * 50, CanvasRate * top_tweet, CanvasRate * 220, CanvasRate * 80);
+        game.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        game.ctx.font = `${CanvasRate * 48}px sans-serif`;
+        game.ctx.fillText("ツイート", CanvasRate * 160, CanvasRate * (top_tweet + 18), CanvasRate * 220, CanvasRate * 80);
+
     }
+}
+
+// in mouse
+function button(x, y, w, h) {
+    return (x < mouse.x && x + w >= mouse.x && y < mouse.y && y + h >= mouse.y);
 }
 
 // for random

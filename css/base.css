@@ -20,7 +20,8 @@ main {
 
 h1 {
     font-size: xxx-large;
-    padding-top: 1em;
+    padding: .5em;
+    margin: 0;
 }
 
 footer {
