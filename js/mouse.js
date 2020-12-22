@@ -20,14 +20,13 @@ function mouseDown() {
 }
 
 // click check
-function clickcCheck(){
+function clickcCheck() {
 	mouse.click--;
 }
 
 // get click
 function getClick() {
-	if(mouse.click > 0) {
-		console.log(mouse.click);
+	if (mouse.click > 0) {
 		mouse.click = 0;
 		return true;
 	}
