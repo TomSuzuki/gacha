@@ -33,6 +33,7 @@ class gameVariable {
     imgTodayCapsule = new Image();
     imgBackground = new Image();
     dialogOpacity = 0;
+    dinnerList = null;
 
     // init
     constructor(ctx, dinnerList) {
@@ -41,11 +42,7 @@ class gameVariable {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
 
-        // init
-        this.isClicked = false;
-        this.isDialogOpen = false;
-
-        // hontai
+        // body
         this.imgBody.src = FILE_BODY;
         this.imgBackground.src = FILE_BACKGROUND;
 
@@ -54,6 +51,16 @@ class gameVariable {
         for (let i = 0; i < 72; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_DINNER));
         for (let i = 0; i < 3; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_LIKE));
         for (let i = 0; i < 4; i++) this.capsuleObjects.push(new capsuleObject(FILE_CAPSUEL_EATING_OUT));
+
+        // init
+        this.dinnerList = dinnerList;
+        this.init();
+    }
+
+    init() {
+        // init event
+        this.isClicked = false;
+        this.isDialogOpen = false;
 
         // random
         let allPoint = PAR_DINNER + PAR_LIKE + PAR_EATING_OUT;
@@ -68,8 +75,8 @@ class gameVariable {
             this.todayDinnerType = "eating_out";
             this.imgTodayCapsule = new capsuleObject(FILE_CAPSUEL_EATING_OUT);
         }
-        let n = random(Object.keys(dinnerList[this.todayDinnerType]).length);
-        this.todayDinnerName = dinnerList[this.todayDinnerType][n];
+        let n = random(Object.keys(this.dinnerList[this.todayDinnerType]).length);
+        this.todayDinnerName = this.dinnerList[this.todayDinnerType][n];
         this.imgTodayCapsule.setPosition(-999, -999);
     }
 
@@ -162,13 +169,24 @@ class gameVariable {
 
             // reload
             if (this.button("もう一度", "CC0000", 50, top_reload, 220, 80, alpha)) {
-                location.reload();
+                this.init();
             };
 
             // tweet
             if (this.button("ツイート", "1DA1F3", 50, top_tweet, 220, 80, alpha)) {
                 this.tweet();
             };
+
+        }
+
+        // start message
+        if (!this.isClicked) {
+            let y = 470;
+            this.ctx.font = `bold ${CanvasRate * 64}px sans-serif`;
+            this.ctx.fillStyle = `rgba(0, 70, 70, 1)`;
+            this.text("タップでガチャ！", 160 + 3, y + 3, 260);
+            this.ctx.fillStyle = `rgba(255, 255, 255, 1)`;
+            this.text("タップでガチャ！", 160, y, 260);
 
         }
     }
