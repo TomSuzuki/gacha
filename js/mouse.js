@@ -1,33 +1,37 @@
+var mouse = new point();
+
 // add event
 function additionMouseEvent(canvas) {
 	canvas.addEventListener('mousemove', mouseMove, true);
 	canvas.addEventListener('mouseout', mouseMove, true);
 	canvas.addEventListener('mousedown', mouseDown, false);
-	canvas.addEventListener('mouseup', mouseUp, false);
 }
 
 // mouse point
 function point() {
 	this.x = 0;
 	this.y = 0;
-	this.click = false;
+	this.click = 0;
 }
 
 // mouse click
 function mouseDown() {
-	mouse.click = true;
+	mouse.click = 2;
 }
 
-// mouseup
-function mouseUp() {
-	mouse.click = false;
+// click check
+function clickcCheck(){
+	mouse.click--;
 }
 
 // get click
 function getClick() {
-	let b = mouse.click;
-	mouse.click = false;
-	return b;
+	if(mouse.click > 0) {
+		console.log(mouse.click);
+		mouse.click = 0;
+		return true;
+	}
+	return false;
 }
 
 // mouse move event

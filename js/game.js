@@ -263,6 +263,9 @@ function gameInitialize(ctx, dinnerList, canvasRate) {
 
     // game start
     (function () {
+        // click
+        clickcCheck();
+
         // main
         Game.main();
 
