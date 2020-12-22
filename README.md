@@ -4,13 +4,16 @@
  <p align="center">JavaScriptの勉強で作った夜ごはんガチャ。</p>
 </p>
 
- <p align="center">
-  <a href="https://github.com/anuraghazra/github-readme-stats/actions">
-    <img alt="LICENSE" src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" />
-  </a>
-  <a href="https://github.com/anuraghazra/github-readme-stats/issues">
-    <img alt="Issues" src="https://img.shields.io/github/issues/TomSuzuki/gacha?color=0088ff" />
-  </a>
+<p align="center">
+ <a href="https://github.com/anuraghazra/github-readme-stats/actions">
+   <img alt="LICENSE" src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" />
+ </a>
+ <a href="https://github.com/anuraghazra/github-readme-stats/issues">
+   <img alt="Issues" src="https://img.shields.io/github/issues/TomSuzuki/gacha?color=0088ff" />
+ </a>
+ <a href="https://codeclimate.com/github/TomSuzuki/gacha/maintainability">
+  <img src="https://api.codeclimate.com/v1/badges/3b83d81d8d951905ce91/maintainability" />
+ </a>
 </p>
 
 
