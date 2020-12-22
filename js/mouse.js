@@ -1,3 +1,11 @@
+// add event
+function additionMouseEvent(canvas) {
+	canvas.addEventListener('mousemove', mouseMove, true);
+	canvas.addEventListener('mouseout', mouseMove, true);
+	canvas.addEventListener('mousedown', mouseDown, false);
+	canvas.addEventListener('mouseup', mouseUp, false);
+}
+
 // mouse point
 function point() {
 	this.x = 0;
@@ -6,8 +14,13 @@ function point() {
 }
 
 // mouse click
-function onClick() {
+function mouseDown() {
 	mouse.click = true;
+}
+
+// mouseup
+function mouseUp() {
+	mouse.click = false;
 }
 
 // get click
@@ -25,9 +38,9 @@ function mouseMove(event) {
 
 // in mouse
 function inMouse(x, y, w, h) {
-    x = CanvasRate * x;
-    y = CanvasRate * y;
-    w = CanvasRate * w;
-    h = CanvasRate * h;
-    return (x < mouse.x && x + w >= mouse.x && y < mouse.y && y + h >= mouse.y);
+	x = CanvasRate * x;
+	y = CanvasRate * y;
+	w = CanvasRate * w;
+	h = CanvasRate * h;
+	return (x < mouse.x && x + w >= mouse.x && y < mouse.y && y + h >= mouse.y);
 }
