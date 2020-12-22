@@ -5,6 +5,9 @@
 </p>
 
 <p align="center">
+ <a href="https://github.com/TomSuzuki">
+  <img alt="sushi" src="https://img.shields.io/badge/like-sushi-FE8125.svg">
+ </a>
  <a href="https://github.com/anuraghazra/github-readme-stats/actions">
    <img alt="LICENSE" src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" />
  </a>
