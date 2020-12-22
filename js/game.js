@@ -61,6 +61,7 @@ class gameVariable {
         // init event
         this.isClicked = false;
         this.isDialogOpen = false;
+        this.dialogOpacity = 0;
 
         // random
         let allPoint = PAR_DINNER + PAR_LIKE + PAR_EATING_OUT;
