@@ -1,4 +1,3 @@
-var mouse = new point();
 var screenCanvas;
 
 // 最初に実行
