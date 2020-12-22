@@ -25,8 +25,7 @@ function initialize() {
 	}
 
 	// mouse
-	screenCanvas.addEventListener('mousemove', mouseMove, true);
-	screenCanvas.addEventListener('click', onClick, false);
+	additionMouseEvent(screenCanvas);
 
 	// create
 	let ctx = screenCanvas.getContext('2d');
