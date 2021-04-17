@@ -7,7 +7,9 @@
     <meta property="og:description" content="夜ごはんに迷ったときはガチャで決めよう！">
     <meta property="og:image" content="https://raw.githubusercontent.com/TomSuzuki/gacha/main/img/capsule_2.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜ごはんガチャ</title>
     <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" type="text/css" href="./css/base.css">
     <script type="text/javascript" src="./js/mouse.js"></script>
     <script type="text/javascript" src="./js/load.js"></script>
@@ -15,7 +17,19 @@
     <script type="text/javascript" src="./js/capsuleObject.js"></script>
     <script type="text/javascript" src="./js/game.js"></script>
     <script type="text/javascript" src="./js/main.js"></script>
-    <title>夜ごはんガチャ</title>
+
+    <script>
+        window.addEventListener('load', function () {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register("./serviceWorker.js")
+                    .then(function (registration) {
+                        console.log("serviceWorker registed.");
+                    }).catch(function (error) {
+                        console.warn("serviceWorker error.", error);
+                    });
+            }
+        });
+    </script>
 </head>
 
 <body>
