@@ -35,8 +35,8 @@ function getClick() {
 
 // mouse move event
 function mouseMove(event) {
-	mouse.x = event.clientX - screenCanvas.offsetLeft + window.pageXOffset;
-	mouse.y = event.clientY - screenCanvas.offsetTop + window.pageYOffset;
+	mouse.x = event.offsetX;
+	mouse.y = event.offsetY;
 }
 
 // in mouse

@@ -1,3 +1,6 @@
+// default
+const CanvasWidth = 320;
+const CanvasHeight = 640;
 var screenCanvas;
 
 // 最初に実行
@@ -10,18 +13,8 @@ function initialize() {
 	screenCanvas = document.getElementById('canvas');
 
 	// width and height
-	let ph = document.documentElement.clientHeight * 0.85;
-	let pw = ph / 2;
-	let par = pw / 320;
-	screenCanvas.width = pw;
-	screenCanvas.height = ph;
-	if (pw > document.documentElement.clientWidth * 0.9) {
-		pw = document.documentElement.clientWidth * 0.85;
-		ph = pw * 2;
-		par = pw / 320;
-		screenCanvas.width = pw;
-		screenCanvas.height = ph;
-	}
+	resize(screenCanvas);
+	window.addEventListener('resize', () => { resize(screenCanvas) });
 
 	// mouse
 	additionMouseEvent(screenCanvas);
@@ -30,6 +23,26 @@ function initialize() {
 	let ctx = screenCanvas.getContext('2d');
 	loadTextFile("./data/dinner.json", function (result) {
 		json = JSON.parse(result);
-		gameInitialize(ctx, json, par);
+		gameInitialize(ctx, json, 1.0);
 	});
+}
+
+function resize(canvas) {
+	// now client size
+	let clientH = window.innerHeight;
+	let clientW = window.innerWidth;
+
+	// canvas size (max-height)
+	let h = clientH;
+	let w = clientH / 2;
+
+	// canvas size (max-width)
+	if (w > clientW) {
+		h = clientW * 2;
+		w = clientW;
+	}
+
+	// resize
+	let p = w / CanvasWidth;
+	canvas.style.transform = `translate(-50%, -50%) scale(${p}, ${p})`;
 }
